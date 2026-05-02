@@ -1,0 +1,12 @@
+.wrapper {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    border-bottom: black 1px solid;
+}
+
+.header_blocks {
+    background-color: #d8f0ff;
+    padding: 10px 20px;
+    border-radius: 25px;
+}
