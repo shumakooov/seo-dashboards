@@ -1,14 +1,15 @@
 import './App.css'
-import Header from './components/header/Header'
-import Pagespeed from './components/Pagespeed/Pagespeed'
+import Pagespeed from './pages/Pagespeed/Pagespeed'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
 
   return (
-    <>
-      <Header/>
-      <Pagespeed />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Pagespeed />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
