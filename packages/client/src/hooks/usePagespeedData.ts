@@ -88,18 +88,16 @@ interface PagespeedResponse {
 }
 
 const fetchPagespeedData = async (url: string, strategy: 'desktop' | 'mobile' = 'desktop'): Promise<PagespeedResponse> => {
-  const apiKey = 'AIzaSyA4fJalPDrUStOq5YV7UbdB9vQKx3z5x0U';
-  
-  // Сначала получаем данные от Google PageSpeed API
-  const googleResponse = await fetch(
-    `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}&key=${apiKey}`
+  // Получаем данные через наш сервер (API ключ хранится на сервере)
+  const response = await fetch(
+    `http://localhost:3002/api/pagespeed/fetch?url=${encodeURIComponent(url)}&strategy=${strategy}`
   );
 
-  if (!googleResponse.ok) {
-    throw new Error(`Failed to fetch Pagespeed data: ${googleResponse.statusText}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch Pagespeed data: ${response.statusText}`);
   }
 
-  const pagespeedData = await googleResponse.json();
+  const pagespeedData = await response.json();
 
   // Сохраняем данные в нашу базу данных
   try {

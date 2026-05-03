@@ -8,6 +8,36 @@ import {
 
 const router = express.Router();
 
+// GET /api/pagespeed/fetch - получение данных от Google PageSpeed API
+router.get('/fetch', async (req, res) => {
+  try {
+    const { url = 'https://gortools.ru', strategy = 'desktop' } = req.query;
+    
+    const apiKey = process.env.GOOGLE_PAGESPEED_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Google PageSpeed API key not configured' });
+    }
+
+    const googleResponse = await fetch(
+      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url as string)}&strategy=${strategy}&key=${apiKey}`
+    );
+
+    if (!googleResponse.ok) {
+      throw new Error(`Failed to fetch Pagespeed data: ${googleResponse.statusText}`);
+    }
+
+    const pagespeedData = await googleResponse.json();
+    res.json(pagespeedData);
+    
+  } catch (error) {
+    console.error('Error fetching pagespeed data:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch pagespeed data',
+      details: (error as any).message
+    });
+  }
+});
+
 // POST /api/pagespeed - сохранение данных Pagespeed
 router.post('/', async (req, res) => {
   try {
