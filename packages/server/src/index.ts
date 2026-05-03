@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pagespeedRoutes from './routes/pagespeed';
+import pool from './config/database';
+import { scheduleDailyUpdate } from './services/cronService';
 
 // Загрузка переменных окружения
 dotenv.config();
@@ -27,6 +29,9 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
   console.log(`API endpoints: http://localhost:${PORT}/api/pagespeed`);
+  
+  // Запускаем ежедневное обновление в 4:00
+  scheduleDailyUpdate();
 });
 
 export default app;
