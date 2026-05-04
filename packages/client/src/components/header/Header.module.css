@@ -1,12 +1,18 @@
 .wrapper {
     display: flex;
     justify-content: space-around;
+    align-items: center;
     padding: 20px;
     border-bottom: black 1px solid;
+    gap: 20px;
 }
 
 .header_blocks {
     background-color: #d8f0ff;
-    padding: 10px 20px;
+    padding: 15px 20px;
     border-radius: 25px;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
