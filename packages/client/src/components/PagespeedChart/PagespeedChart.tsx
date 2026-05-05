@@ -1,8 +1,14 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { usePagespeedHistory, usePagespeedData } from '../../hooks/usePagespeedData';
+import type { Dayjs } from 'dayjs';
 
-export default function PagespeedChart() {
-    const { data: historyData, isLoading: historyLoading, isError: historyError, error: historyErrorMessage } = usePagespeedHistory();
+interface PagespeedChartProps {
+    startDate?: Dayjs;
+    endDate?: Dayjs;
+}
+
+export default function PagespeedChart({ startDate, endDate }: PagespeedChartProps) {
+    const { data: historyData, isLoading: historyLoading, isError: historyError, error: historyErrorMessage } = usePagespeedHistory('https://gortools.ru', 30, startDate, endDate);
     const { refetch, isLoading: dataLoading } = usePagespeedData();
 
     const isLoading = historyLoading || dataLoading;

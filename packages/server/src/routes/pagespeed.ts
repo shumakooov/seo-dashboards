@@ -2,6 +2,7 @@ import express from 'express';
 import { 
   savePagespeedData, 
   getPagespeedHistory, 
+  getPagespeedHistoryByDateRange,
   getLatestPagespeedData,
   createDailySummary 
 } from '../services/pagespeedService';
@@ -99,7 +100,7 @@ router.post('/', async (req, res) => {
 // GET /api/pagespeed/history - получение истории данных
 router.get('/history', async (req, res) => {
   try {
-    const { url = 'https://gortools.ru', days = 30 } = req.query;
+    const { url = 'https://gortools.ru', days = 30, startDate, endDate } = req.query;
 
     if (typeof url !== 'string') {
       return res.status(400).json({ 
@@ -107,14 +108,37 @@ router.get('/history', async (req, res) => {
       });
     }
 
-    const daysNum = parseInt(days as string);
-    if (isNaN(daysNum) || daysNum < 1 || daysNum > 365) {
-      return res.status(400).json({ 
-        error: 'Days must be a number between 1 and 365' 
-      });
+    let history;
+
+    if (startDate && endDate) {
+      // Используем диапазон дат
+      if (typeof startDate !== 'string' || typeof endDate !== 'string') {
+        return res.status(400).json({ 
+          error: 'startDate and endDate must be strings' 
+        });
+      }
+
+      // Валидация формата дат (YYYY-MM-DD)
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+        return res.status(400).json({ 
+          error: 'startDate and endDate must be in YYYY-MM-DD format' 
+        });
+      }
+
+      history = await getPagespeedHistoryByDateRange(url, startDate, endDate);
+    } else {
+      // Используем количество дней (старая логика)
+      const daysNum = parseInt(days as string);
+      if (isNaN(daysNum) || daysNum < 1 || daysNum > 365) {
+        return res.status(400).json({ 
+          error: 'Days must be a number between 1 and 365' 
+        });
+      }
+
+      history = await getPagespeedHistory(url, daysNum);
     }
 
-    const history = await getPagespeedHistory(url, daysNum);
     res.json(history);
   } catch (error) {
     console.error('Error fetching pagespeed history:', error);

@@ -97,21 +97,20 @@ export const scheduleDailyUpdate = () => {
   // Настраиваем ежедневный запуск с настраиваемым временем
   const scheduleNextRun = () => {
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    // Получаем время обновления из переменных окружения (по умолчанию 4:00)
     const refreshHour = parseInt(process.env.PAGESPEED_REFRESH_HOUR || '4');
-    tomorrow.setHours(refreshHour, 0, 0, 0);
     
-    // Если время уже прошло сегодня, планируем на завтра
-    if (now.getHours() >= refreshHour) {
-      tomorrow.setDate(tomorrow.getDate() + 1);
+    // Создаем дату следующего запуска
+    const nextRun = new Date(now);
+    nextRun.setHours(refreshHour, 0, 0, 0);
+    
+    // Если время уже прошло сегодня, переносим на завтра
+    if (now.getHours() >= refreshHour || (now.getHours() === refreshHour && now.getMinutes() > 0)) {
+      nextRun.setDate(nextRun.getDate() + 1);
     }
     
-    const msUntilNextRun = tomorrow.getTime() - now.getTime();
+    const msUntilNextRun = nextRun.getTime() - now.getTime();
     
-    console.log(`Next Pagespeed update scheduled for: ${tomorrow.toISOString()} (${refreshHour}:00)`);
+    console.log(`Next Pagespeed update scheduled for: ${nextRun.toISOString()} (${refreshHour}:00)`);
     
     setTimeout(() => {
       updatePagespeedData();

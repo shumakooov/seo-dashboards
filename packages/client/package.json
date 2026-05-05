@@ -10,7 +10,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.15.0",
+    "@mui/material": "^5.18.0",
+    "@mui/x-date-pickers": "^7.29.4",
     "@seo-dashboard/shared": "*",
     "@tanstack/react-query": "^5.8.0",
     "dayjs": "^1.11.20",

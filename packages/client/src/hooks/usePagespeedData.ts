@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import type { Dayjs } from 'dayjs';
 import { useEffect } from 'react';
 
 interface PagespeedData {
@@ -201,13 +202,24 @@ export const usePagespeedData = (url: string = 'https://gortools.ru', refreshHou
   };
 };
 
-export const usePagespeedHistory = (url: string = 'https://gortools.ru', days: number = 30) => {
+export const usePagespeedHistory = (
+  url: string = 'https://gortools.ru', 
+  days: number = 30,
+  startDate?: Dayjs,
+  endDate?: Dayjs
+) => {
   return useQuery({
-    queryKey: ['pagespeed-history', url, days],
+    queryKey: ['pagespeed-history', url, days, startDate, endDate],
     queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:3002/api/pagespeed/history?url=${encodeURIComponent(url)}&days=${days}`
-      );
+      let urlWithParams = `http://localhost:3002/api/pagespeed/history?url=${encodeURIComponent(url)}`;
+      
+      if (startDate && endDate) {
+        urlWithParams += `&startDate=${encodeURIComponent(startDate.format('YYYY-MM-DD'))}&endDate=${encodeURIComponent(endDate.format('YYYY-MM-DD'))}`;
+      } else {
+        urlWithParams += `&days=${days}`;
+      }
+
+      const response = await fetch(urlWithParams);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch pagespeed history: ${response.statusText}`);

@@ -75,6 +75,31 @@ export const getPagespeedHistory = async (url: string, days: number = 30): Promi
   }));
 };
 
+// Получение истории данных для графика по диапазону дат
+export const getPagespeedHistoryByDateRange = async (url: string, startDate: string, endDate: string): Promise<any[]> => {
+  const query = `
+    SELECT 
+      DATE(created_at) as date,
+      AVG(CASE WHEN strategy = 'desktop' THEN performance_score END) as desktop,
+      AVG(CASE WHEN strategy = 'mobile' THEN performance_score END) as mobile
+    FROM pagespeed_records 
+    WHERE url = $1 
+      AND DATE(created_at) >= $2 
+      AND DATE(created_at) <= $3
+    GROUP BY DATE(created_at)
+    ORDER BY date ASC
+  `;
+  
+  const result = await pool.query(query, [url, startDate, endDate]);
+  
+  // Форматируем данные для графика
+  return result.rows.map(row => ({
+    name: new Date(row.date).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' }),
+    desktop: Math.round(row.desktop || 0),
+    mobile: Math.round(row.mobile || 0)
+  }));
+};
+
 // Получение последних данных для URL
 export const getLatestPagespeedData = async (url: string): Promise<{ desktop: PagespeedRecord | null, mobile: PagespeedRecord | null }> => {
   const query = `

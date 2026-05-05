@@ -1,11 +1,18 @@
 import { useState } from 'react'
-import { TextField, Box } from '@mui/material'
 import styles from './Header.module.css'
+import { DatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import type { Dayjs } from 'dayjs';
 
-export default function Header() {
+interface HeaderProps {
+    onDateChange?: (startDate: Dayjs, endDate: Dayjs) => void;
+}
+
+export default function Header({ onDateChange }: HeaderProps) {
     const SITE = 'gortools.ru'
-    const [startDate, setStartDate] = useState('')
-    const [endDate, setEndDate] = useState('')
+    const [startDate, setStartDate] = useState<Dayjs | null>();
+    const [endDate, setEndDate] = useState<Dayjs | null>();
 
     return (
         <div className={styles.wrapper}>
@@ -13,28 +20,28 @@ export default function Header() {
                 {SITE}
             </div>
             <div className={styles.header_blocks}>
-                <Box display="flex" gap={2} alignItems="center">
-                    <TextField
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
                         label="Начальная дата"
-                        type="date"
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        size="small"
-                        InputLabelProps={{
-                            shrink: true,
+                        onChange={(newValue) => {
+                            setStartDate(newValue);
+                            if (onDateChange) {
+                                onDateChange(newValue, endDate);
+                            }
                         }}
                     />
-                    <TextField
+                    <DatePicker
                         label="Конечная дата"
-                        type="date"
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        size="small"
-                        InputLabelProps={{
-                            shrink: true,
+                        onChange={(newValue) => {
+                            setEndDate(newValue);
+                            if (onDateChange) {
+                                onDateChange(startDate, newValue);
+                            }
                         }}
                     />
-                </Box>
+                </LocalizationProvider>
             </div>
             <div className={styles.header_blocks}>
                 Группировка данных
