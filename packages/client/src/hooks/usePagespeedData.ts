@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useEffect } from 'react';
 
 interface PagespeedData {
@@ -213,8 +214,12 @@ export const usePagespeedHistory = (
     queryFn: async () => {
       let urlWithParams = `http://localhost:3002/api/pagespeed/history?url=${encodeURIComponent(url)}`;
       
-      if (startDate && endDate) {
+      if (startDate?.isAfter(endDate)) {
+        throw new Error(`The start date must be earlier than the end date`);
+      } else if (startDate && endDate) {
         urlWithParams += `&startDate=${encodeURIComponent(startDate.format('YYYY-MM-DD'))}&endDate=${encodeURIComponent(endDate.format('YYYY-MM-DD'))}`;
+      } else if (startDate) {
+        urlWithParams += `&startDate=${encodeURIComponent(startDate.format('YYYY-MM-DD'))}&endDate=${encodeURIComponent(dayjs(new Date()).format('YYYY-MM-DD'))}`;
       } else {
         urlWithParams += `&days=${days}`;
       }
