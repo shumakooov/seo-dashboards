@@ -14,3 +14,25 @@ h2 {
     color: #1f2937;
     margin-bottom: 10px;
 }
+
+.emptyState {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.emptyState h3 {
+    color: #374151;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.emptyState p {
+    color: #6b7280;
+    margin: 0;
+    font-size: 16px;
+}

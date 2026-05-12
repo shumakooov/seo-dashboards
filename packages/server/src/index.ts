@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pagespeedRoutes from './routes/pagespeed';
+import sitesRoutes from './routes/sites';
 import pool from './config/database';
 import { scheduleDailyUpdate } from './services/cronService';
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Routes
 app.use('/api/pagespeed', pagespeedRoutes);
+app.use('/api/sites', sitesRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
