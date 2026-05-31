@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-interface Site {
+export interface Site {
   id: string;
   url: string;
   name: string;

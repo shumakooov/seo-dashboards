@@ -2,9 +2,16 @@ import { useState, useRef, useEffect } from 'react';
 import { useSites } from '../../hooks/useSites';
 import SiteManagerDialog from '../SiteManagerDialog/SiteManagerDialog';
 import styles from './SiteSelector.module.css';
+import type { Site } from '../../hooks/useSites';
 
-export default function SiteSelector() {
-  const { sites, selectedSite, selectedSiteId, selectSite, isLoading, error } = useSites();
+interface SiteSelectorProps {
+  selectedSite?: Site | null;
+  selectedSiteId?: string | null;
+  onSelectSite?: (id: string) => void;
+}
+
+export default function SiteSelector({ selectedSite, selectedSiteId, onSelectSite }: SiteSelectorProps) {
+  const { sites, isLoading, error } = useSites();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showManagerDialog, setShowManagerDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,7 +34,9 @@ export default function SiteSelector() {
   }, []);
 
   const handleSelectSite = (siteId: string) => {
-    selectSite(siteId);
+    if (onSelectSite) {
+      onSelectSite(siteId);
+    }
     setShowDropdown(false);
   };
 

@@ -5,19 +5,23 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import SiteSelector from '../SiteSelector/SiteSelector';
+import type { Site } from '../../hooks/useSites';
 
 interface HeaderProps {
     onDateChange?: (startDate: Dayjs, endDate: Dayjs) => void;
+    selectedSite?: Site | null;
+    selectedSiteId?: string | null;
+    onSelectSite?: (id: string) => void;
 }
 
-export default function Header({ onDateChange }: HeaderProps) {
+export default function Header({ onDateChange, selectedSite, selectedSiteId, onSelectSite }: HeaderProps) {
     const [startDate, setStartDate] = useState<Dayjs | null>();
     const [endDate, setEndDate] = useState<Dayjs | null>();
 
     return (
         <div className={styles.wrapper}>
             <div className={styles.header_blocks}>
-                <SiteSelector />
+                <SiteSelector selectedSite={selectedSite} selectedSiteId={selectedSiteId} onSelectSite={onSelectSite} />
             </div>
             <div className={styles.header_blocks}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>

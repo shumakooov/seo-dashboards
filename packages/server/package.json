@@ -7,6 +7,7 @@
     "lint": "eslint src/",
     "migrate": "tsx scripts/migrate.ts",
     "migrate-002": "tsx scripts/migrate-002.ts",
+    "migrate-003": "tsx scripts/migrate-003.ts",
     "test-db": "tsx scripts/test-db-connection.ts"
   },
   "dependencies": {

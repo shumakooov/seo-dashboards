@@ -150,7 +150,7 @@ const shouldRefresh = (lastFetchTime: number | null, refreshHour: number = 4): b
 };
 
 
-export const usePagespeedData = (url: string = 'https://gortools.ru', refreshHour: number = 4) => {
+export const usePagespeedData = (url: string, refreshHour: number = 4) => {
   // Запрос для desktop - отключен по умолчанию
   const desktopQuery = useQuery({
     queryKey: ['pagespeed', url, 'desktop'],
@@ -204,7 +204,7 @@ export const usePagespeedData = (url: string = 'https://gortools.ru', refreshHou
 };
 
 export const usePagespeedHistory = (
-  url: string = 'https://gortools.ru', 
+  url: string,
   days: number = 30,
   startDate?: Dayjs,
   endDate?: Dayjs

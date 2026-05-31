@@ -9,7 +9,7 @@ interface PagespeedChartProps {
 }
 
 export default function PagespeedChart({ startDate, endDate, selectedSite }: PagespeedChartProps) {
-    const siteUrl = selectedSite || 'https://gortools.ru';
+    const siteUrl = selectedSite;
     const { data: historyData, isLoading: historyLoading, isError: historyError, error: historyErrorMessage } = usePagespeedHistory(siteUrl, 30, startDate, endDate);
     const { refetch, isLoading: dataLoading } = usePagespeedData(siteUrl);
 

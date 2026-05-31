@@ -62,7 +62,6 @@ export const getPagespeedHistory = async (url: string, days: number = 30): Promi
       AND created_at >= NOW() - INTERVAL '${days} days'
     GROUP BY DATE(created_at)
     ORDER BY date DESC
-    LIMIT 12
   `;
   
   const result = await pool.query(query, [url]);

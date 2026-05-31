@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, name, url, created_at, updated_at FROM sites ORDER BY created_at ASC'
+      'SELECT id, name, url, created_at FROM sites ORDER BY created_at ASC'
     );
     res.json(result.rows);
   } catch (error) {
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'INSERT INTO sites (name, url) VALUES ($1, $2) RETURNING id, name, url, created_at, updated_at',
+      'INSERT INTO sites (name, url) VALUES ($1, $2) RETURNING id, name, url, created_at',
       [name, normalizedUrl]
     );
     res.status(201).json(result.rows[0]);
@@ -57,7 +57,7 @@ router.put('/:id', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'UPDATE sites SET name = $1, url = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING id, name, url, created_at, updated_at',
+      'UPDATE sites SET name = $1, url = $2 WHERE id = $3 RETURNING id, name, url, created_at',
       [name, normalizedUrl, id]
     );
 

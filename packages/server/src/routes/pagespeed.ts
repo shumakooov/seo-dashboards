@@ -12,7 +12,7 @@ const router = express.Router();
 // GET /api/pagespeed/fetch - получение данных от Google PageSpeed API
 router.get('/fetch', async (req, res) => {
   try {
-    const { url = 'https://gortools.ru', strategy = 'desktop' } = req.query;
+    const { url, strategy = 'desktop' } = req.query;
     
     const apiKey = process.env.GOOGLE_PAGESPEED_API_KEY;
     if (!apiKey) {
@@ -100,7 +100,7 @@ router.post('/', async (req, res) => {
 // GET /api/pagespeed/history - получение истории данных
 router.get('/history', async (req, res) => {
   try {
-    const { url = 'https://gortools.ru', days = 30, startDate, endDate } = req.query;
+    const { url, days = 30, startDate, endDate } = req.query;
 
     if (typeof url !== 'string') {
       return res.status(400).json({ 
@@ -128,7 +128,7 @@ router.get('/history', async (req, res) => {
 
       history = await getPagespeedHistoryByDateRange(url, startDate, endDate);
     } else {
-      // Используем количество дней (старая логика)
+      // Используем количество дней
       const daysNum = parseInt(days as string);
       if (isNaN(daysNum) || daysNum < 1 || daysNum > 365) {
         return res.status(400).json({ 
@@ -151,7 +151,7 @@ router.get('/history', async (req, res) => {
 // GET /api/pagespeed/latest - получение последних данных
 router.get('/latest', async (req, res) => {
   try {
-    const { url = 'https://gortools.ru' } = req.query;
+    const { url } = req.query;
 
     if (typeof url !== 'string') {
       return res.status(400).json({ 

@@ -55,33 +55,48 @@ export const scheduleDailyUpdate = () => {
     try {
       console.log('Starting daily Pagespeed update...');
       
-      const url = 'https://gortools.ru';
+      // Получаем все сайты из базы данных
+      const sitesResult = await pool.query('SELECT url FROM sites');
+      const sites = sitesResult.rows;
       
-      // Проверяем есть ли уже данные за сегодня
-      const desktopExists = await checkDataExistsForToday(url, 'desktop');
-      const mobileExists = await checkDataExistsForToday(url, 'mobile');
-      
-      if (desktopExists && mobileExists) {
-        console.log('Data already exists for today, skipping update');
+      if (sites.length === 0) {
+        console.log('No sites found in database, skipping update');
         return;
       }
       
-      // Получаем данные для desktop только если их нет
-      if (!desktopExists) {
-        console.log('Fetching desktop data...');
-        const desktopData = await fetchFromServer(url, 'desktop');
-        await saveToServer(url, 'desktop', desktopData);
-      } else {
-        console.log('Desktop data already exists for today');
-      }
+      console.log(`Found ${sites.length} sites to update`);
       
-      // Получаем данные для mobile только если их нет
-      if (!mobileExists) {
-        console.log('Fetching mobile data...');
-        const mobileData = await fetchFromServer(url, 'mobile');
-        await saveToServer(url, 'mobile', mobileData);
-      } else {
-        console.log('Mobile data already exists for today');
+      // Обрабатываем каждый сайт
+      for (const site of sites) {
+        const url = site.url;
+        console.log(`Processing site: ${url}`);
+        
+        // Проверяем есть ли уже данные за сегодня
+        const desktopExists = await checkDataExistsForToday(url, 'desktop');
+        const mobileExists = await checkDataExistsForToday(url, 'mobile');
+        
+        if (desktopExists && mobileExists) {
+          console.log(`Data already exists for ${url}, skipping`);
+          continue;
+        }
+        
+        // Получаем данные для desktop только если их нет
+        if (!desktopExists) {
+          console.log(`Fetching desktop data for ${url}...`);
+          const desktopData = await fetchFromServer(url, 'desktop');
+          await saveToServer(url, 'desktop', desktopData);
+        } else {
+          console.log(`Desktop data already exists for ${url}`);
+        }
+        
+        // Получаем данные для mobile только если их нет
+        if (!mobileExists) {
+          console.log(`Fetching mobile data for ${url}...`);
+          const mobileData = await fetchFromServer(url, 'mobile');
+          await saveToServer(url, 'mobile', mobileData);
+        } else {
+          console.log(`Mobile data already exists for ${url}`);
+        }
       }
       
       console.log('Daily Pagespeed update completed successfully');

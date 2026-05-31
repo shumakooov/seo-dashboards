@@ -8,7 +8,7 @@ import type { Dayjs } from 'dayjs';
 export default function Pagespeed() {
     const [startDate, setStartDate] = useState<Dayjs | null>();
     const [endDate, setEndDate] = useState<Dayjs | null>();
-    const { selectedSite } = useSites();
+    const { selectedSite, selectedSiteId, selectSite } = useSites();
 
     const handleDateChange = (newStartDate: Dayjs, newEndDate: Dayjs) => {
         setStartDate(newStartDate);
@@ -17,7 +17,7 @@ export default function Pagespeed() {
 
     return (
         <>
-        <Header onDateChange={handleDateChange} />
+        <Header onDateChange={handleDateChange} selectedSite={selectedSite} selectedSiteId={selectedSiteId} onSelectSite={selectSite} />
         <div className={styles.wrapper}>
             <h2>Скорость загрузки страниц</h2>
             {!selectedSite ? (
